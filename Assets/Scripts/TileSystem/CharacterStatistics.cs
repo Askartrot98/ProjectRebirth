@@ -1,54 +1,59 @@
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class CharacterStatistics : MonoBehaviour
 {
-    public string CharacterType { get; set; } = "Player"; // Default character type
-    public int Health { get; set; }
-    public int Damage { get; set; }
-    public int Defense { get; set; }
+    public string CharacterType = "Player"; // Default character type
+    [SerializeField] private int health;
+    [SerializeField] private int damage; 
+    [SerializeField] private int defense; 
+    [SerializeField] private int level; 
+    [SerializeField] private int experience;
 
-    public int Level { get; set; } = 1; 
-    public int Experience { get; set; }
-    
-    public void Stats(string type, int health, int damage, int defense, int level, int experience)
-    {
-        CharacterType = type;
-        Health = health;
-        Damage = damage;
-        Defense = defense;
-        Level = level;
-        Experience = experience;
-    }
+    [SerializeField] private LayerMask layerMask;
+    [SerializeField] private float radius = 1.5f; // Radius for the attack hitbox
+    [SerializeField] private GameObject weaponHitbox; // Reference to the left hand hitbox
 
-    public void GetStats()
-    {
-        Debug.Log($"Health: {Health}, Damage: {Damage}, Defense: {Defense}, Level: {Level}, Experience: {Experience}");
-    }
 
-    public void TakeDamage()
+
+   
+
+    public void TakeDamage(int damage)
     {
-        Health -= Damage;
-        if (Health < 0)
+        health -= damage;
+        if (health < 0)
         {
-            Health = 0; // Prevent health from going below zero
+            health = 0; // Prevent health from going below zero
             Debug.Log("Character is dead.");
         }
         Debug.Log("Taking damage...");
 
     }
 
-    public int DoDamage(int )
+    public void DoDamage()
     {
-        if (Health <= 0)
+        Collider[] hitColliders = Physics.OverlapSphere(weaponHitbox.transform.position, radius, layerMask);
+        foreach (Collider enemy in hitColliders)
         {
-            Debug.Log("Character is dead and cannot deal damage.");
-            return 0; // Cannot deal damage if dead
+            CharacterStatistics enemyStats = enemy.GetComponent<CharacterStatistics>();
+            if (enemyStats != null && enemyStats != this) // Ensure it's not self
+            {
+                enemyStats.TakeDamage(damage);
+                Debug.Log($"Dealt {damage} damage to {enemyStats.CharacterType} at position {weaponHitbox.transform.position}");
+            }
         }
-        else if (Health > 0 && CharacterType == "Enemy")
-        {
-            Debug.Log("Dealing damage...");
-            return Damage; // Return the damage value
-        }
-        
+
+
+
     }
+
+    private void OnDrawGizmosSelected()
+    {
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(weaponHitbox.transform.position, radius);
+
+
+    }
+
 }

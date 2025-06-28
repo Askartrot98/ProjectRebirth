@@ -30,8 +30,5 @@ public class PlayerAttack : MonoBehaviour
       
     }
 
-    public void Damage()
-    {
-
-    }
+    
 }

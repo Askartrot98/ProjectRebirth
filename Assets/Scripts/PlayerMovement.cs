@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private Camera mainCamera;
     private Vector3 moveInput;
+    private Rigidbody rb;
 
 
 
@@ -17,12 +18,14 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.LogError("PlayerInput component is missing from the GameObject.");
         }
+        rb = GetComponent<Rigidbody>();
+
 
 
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Vector3 camForward = mainCamera.transform.forward;
         camForward.y = 0; // Keep the forward direction horizontal
@@ -34,13 +37,13 @@ public class PlayerMovement : MonoBehaviour
 
 
         Vector3 moveDirection = camForward * moveInput.z + camRight * moveInput.x;
-        
-        transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.World);
 
-        if(moveDirection != Vector3.zero)
+        rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
+
+        if (moveDirection != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, Time.fixedDeltaTime * 10f));
         }
 
 
@@ -51,8 +54,9 @@ public class PlayerMovement : MonoBehaviour
     {
         if (context.performed)
         {
-            moveInput = context.ReadValue<Vector3>();
-           
+            Vector2 input = context.ReadValue<Vector2>();
+            moveInput = new Vector3(input.x, 0, input.y); // X e Z
+
 
         }
         else if (context.canceled)

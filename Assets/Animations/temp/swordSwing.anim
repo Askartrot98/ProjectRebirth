@@ -80,8 +80,17 @@ AnimationClip:
         inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
         outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
       - serializedVersion: 3
+        time: 0.38333333
+        value: {x: 0.622, y: 0.44873416, z: 0.944}
+        inSlope: {x: -5.656, y: -3.8600001, z: 5}
+        outSlope: {x: -5.656, y: -3.8600001, z: 5}
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+      - serializedVersion: 3
         time: 0.5
-        value: {x: -0.8, y: 0.005, z: 0.97}
+        value: {x: -0.8, y: 0.005, z: 1.722}
         inSlope: {x: 0, y: -0.28363663, z: 0.3221157}
         outSlope: {x: 0, y: -0.28363663, z: 0.3221157}
         tangentMode: 0
@@ -174,6 +183,15 @@ AnimationClip:
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
+        time: 0.38333333
+        value: 0.622
+        inSlope: -5.656
+        outSlope: -5.656
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
         time: 0.5
         value: -0.8
         inSlope: 0
@@ -217,6 +235,15 @@ AnimationClip:
         value: 0.97
         inSlope: 0
         outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.38333333
+        value: 0.44873416
+        inSlope: -3.8600001
+        outSlope: -3.8600001
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
@@ -270,8 +297,17 @@ AnimationClip:
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
+        time: 0.38333333
+        value: 0.944
+        inSlope: 5
+        outSlope: 5
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
         time: 0.5
-        value: 0.97
+        value: 1.722
         inSlope: 0.3221157
         outSlope: 0.3221157
         tangentMode: 0
@@ -478,4 +514,11 @@ AnimationClip:
     flags: 0
   m_HasGenericRootTransform: 1
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0.5
+    functionName: CallPlayerDamage
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
