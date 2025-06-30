@@ -2,55 +2,89 @@ using System.Linq;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static Unity.Cinemachine.IInputAxisOwner;
 
 public class CameraLockOn : MonoBehaviour
 {
-    [SerializeField] private CinemachineCamera lockOnCamera;
-    [SerializeField] private CinemachineCamera freeLookCamera;
+    [SerializeField] private CinemachineCamera mainCamera;
+    [SerializeField] private Transform playerTarget; // Il target da seguire normalmente
+    [SerializeField] private PlayerInput playerInput; // Azione di input per il lock-on
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private float lockOnRadius = 20f;
+    [SerializeField] private CinemachineInputAxisController inputAxisController;
 
-    private Transform currentTarget;
 
+    private Transform currentEnemy;
+
+    private void Awake()
+    {
+        
+    }
     private void Start()
     {
-        Debug.Log("CameraLockOn avviato");
-        currentTarget = null;
-        lockOnCamera.gameObject.SetActive(false);
+        PlayerInput playerInput = GetComponent<PlayerInput>();
+        
     }
+  
     public void LockOn(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        Debug.Log("LockOn called");
+        if (context.started)
         {
-            Debug.Log("fungo");
-            if (currentTarget == null)
+            Debug.Log("LockOn input received");
+            if (currentEnemy == null)
                 LockOnToNearestEnemy();
             else
                 Unlock();
         }
     }
+
     void LockOnToNearestEnemy()
     {
         Collider[] enemies = Physics.OverlapSphere(transform.position, lockOnRadius, enemyLayer);
         if (enemies.Length > 0)
         {
-            // Trova il nemico più vicino
-            currentTarget = enemies
+            currentEnemy = enemies
                 .Select(e => e.transform)
                 .OrderBy(t => Vector3.Distance(transform.position, t.position))
                 .First();
 
-            lockOnCamera.Follow = currentTarget;
-            lockOnCamera.LookAt = currentTarget;
-            lockOnCamera.gameObject.SetActive(true);
-            freeLookCamera.gameObject.SetActive(false);
+           
+
+            mainCamera.Follow = playerTarget;
+            mainCamera.LookAt = currentEnemy;
+            inputAxisController.enabled = false;
+
+            var orbitalFollow = mainCamera.GetComponent<CinemachineOrbitalFollow>();
+            if (orbitalFollow != null)
+            {
+
+                orbitalFollow.Radius = 5f;
+                // Imposta il valore dell'asse verticale (0 = basso, 0.5 = centro, 1 = alto)
+                orbitalFollow.VerticalAxis.Value = 20f; // centro verticale
+                orbitalFollow.HorizontalAxis.Value = 1f; // centro orizzontale
+            }
+            else
+            {
+                Debug.LogWarning("CinemachineOrbitalFollow non trovato sulla camera!");
+            }
+
+        }
+        else
+        {
+            Debug.Log("Nessun nemico trovato nel raggio di lock-on.");
         }
     }
 
     void Unlock()
     {
-        currentTarget = null;
-        lockOnCamera.gameObject.SetActive(false);
-        freeLookCamera.gameObject.SetActive(true);
+        currentEnemy = null;
+        Debug.Log("Unlock called");
+        Debug.Log("mainCamera: " + mainCamera);
+        // Torna a seguire e guardare solo il player
+
+        mainCamera.Follow = playerTarget;
+        mainCamera.LookAt = playerTarget;
+        inputAxisController.enabled = true;
     }
 }
